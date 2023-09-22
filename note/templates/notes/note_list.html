@@ -1,10 +1,25 @@
-<!-- notes/templates/notes/note_list.html -->
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=ABeeZee&family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/note_list.css' %}">
 </head>
 <body>
+    <nav>
+        <div class="nav-bar">
+            <div class="logo">
+                <img src="{% static 'image/Screenshot_2023-09-22_182248-removebg-preview.png' %}" alt="logo" width="100px">
+            </div>
+            <div class="search">
+                <input type="search" placeholder="Search your note">
+            </div>
+        </div>
+    </nav>
+    
     <h1>My Notes</h1>
     <ul>
         {% for note in notes %}
