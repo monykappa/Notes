@@ -1,0 +1,38 @@
+<!-- notes/templates/notes/note_form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Note</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <h1>Create Note</h1>
+    <form method="post" id="noteForm">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" id="saveButton">Save new note</button>
+    </form>
+    <a href="{% url 'note_list' %}">Back to Notes</a>
+
+    <script>
+        // JavaScript to show a SweetAlert confirmation for "Save new note" button
+        document.getElementById('saveButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            Swal.fire({
+                title: 'Save New Note',
+                text: 'Are you sure you want to save this new note?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, save',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Form submission here if confirmed
+                    document.getElementById('noteForm').submit();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

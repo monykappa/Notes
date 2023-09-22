@@ -1,0 +1,21 @@
+<!-- notes/templates/notes/note_list.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Notes</title>
+</head>
+<body>
+    <h1>My Notes</h1>
+    <ul>
+        {% for note in notes %}
+        <li>
+            <a href="{% url 'note_detail' note.id %}">
+                <strong>{{ note.title }}</strong><br>
+            </a>
+            {{ note.content }}
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'create_note' %}">Create New Note</a>
+</body>
+</html>

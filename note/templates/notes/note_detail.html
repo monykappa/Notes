@@ -1,0 +1,68 @@
+<!-- notes/templates/notes/note_detail.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Note Detail</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <h1>Note Detail</h1>
+
+    <form method="post" id="noteForm">
+        {% csrf_token %}
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" value="{{ note.title }}"><br>
+        <label for="content">Content:</label>
+        <textarea name="content" id="content">{{ note.content }}</textarea><br>
+        <button type="submit" id="saveButton">Save</button> <!-- Changed input to button -->
+    </form>
+
+    <a href="{% url 'note_list' %}" id="backToNoteList">Back to Note List</a>
+
+    <script>
+        // JavaScript to show a SweetAlert confirmation for "Save" button
+        document.getElementById('saveButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            Swal.fire({
+                title: 'Save Changes',
+                text: 'Your changes have been saved.',
+                icon: 'info',
+                timer: 2000, // Display for 2 seconds (adjust as needed)
+                showConfirmButton: false
+            }).then(() => {
+                // Form submission here after the timer
+                document.getElementById('noteForm').submit();
+            });
+        });
+
+        // JavaScript to show a SweetAlert confirmation for "Back to Note List" link
+        document.getElementById('backToNoteList').addEventListener('click', function(event) {
+            if (document.getElementById('noteForm').hasAttribute('data-changed')) {
+                // If the form has changed, show a confirmation alert with SweetAlert
+                Swal.fire({
+                    title: 'Leave without saving?',
+                    text: 'You have unsaved changes. Are you sure you want to go back without saving?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, go back',
+                    cancelButtonText: 'Cancel',
+                    timer: 10000, // Adjust the timer (in milliseconds) as needed
+                    timerProgressBar: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // User confirmed, navigate back
+                        window.location.href = this.href;
+                    }
+                });
+                event.preventDefault(); // Prevent immediate navigation
+            }
+        });
+
+        // JavaScript to track form changes
+        document.getElementById('noteForm').addEventListener('input', function() {
+            this.setAttribute('data-changed', 'true');
+        });
+    </script>
+</body>
+</html>
