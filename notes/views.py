@@ -32,3 +32,18 @@ def note_detail(request, note_id):
             return redirect('note_list')
 
     return render(request, 'notes/note_detail.html', {'note': note})
+
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+
+def custom_signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Log in the user after signup
+            login(request, user)
+            return redirect('note_list')  # Redirect to the notes page after signup
+    else:
+        form = UserCreationForm()
+    return render(request, 'userprofile/signup.html', {'form': form})   

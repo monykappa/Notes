@@ -6,4 +6,5 @@ urlpatterns = [
     path('', views.note_list, name='note_list'),
     path('create/', views.create_note, name='create_note'),
     path('notes/<int:note_id>/', views.note_detail, name='note_detail'),
+    path('signup/', views.custom_signup, name='custom_signup'),
 ]
