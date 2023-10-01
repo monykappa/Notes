@@ -17,8 +17,14 @@
             <div class="search">
                 <input type="search" placeholder="Search your note">
             </div>
+            <div class="logout">
+                {% if user.is_authenticated %}
+                <a href="{% url 'userprofile:custom_logout' %}" class="btn btn-outline-danger">Logout</a>
+                {% endif %}
+            </div>
         </div>
     </nav>
+    
     
     <h1>My Notes</h1>
     <ul>

@@ -4,12 +4,15 @@ from .models import Note
 from .forms import NoteForm
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt  
+from django.views.decorators.csrf import csrf_exempt 
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='/signin/')
 def note_list(request):
     notes = Note.objects.all()
     return render(request, 'notes/note_list.html', {'notes': notes})
 
+@login_required
 def create_note(request):
     if request.method == 'POST':
         form = NoteForm(request.POST)
@@ -20,6 +23,7 @@ def create_note(request):
         form = NoteForm()
     return render(request, 'notes/note_form.html', {'form': form})
 
+@login_required
 def note_detail(request, note_id):
     note = get_object_or_404(Note, id=note_id)
 
@@ -32,18 +36,3 @@ def note_detail(request, note_id):
             return redirect('note_list')
 
     return render(request, 'notes/note_detail.html', {'note': note})
-
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
-
-def custom_signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            # Log in the user after signup
-            login(request, user)
-            return redirect('note_list')  # Redirect to the notes page after signup
-    else:
-        form = UserCreationForm()
-    return render(request, 'userprofile/signup.html', {'form': form})   

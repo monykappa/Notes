@@ -28,6 +28,9 @@ DEBUG = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+
+
+
 ALLOWED_HOSTS = ['*']
 
 
@@ -41,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'notes',
+    'userprofile',
 ]
 
 MIDDLEWARE = [
@@ -118,6 +122,11 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+
+LOGIN_URL = 'signin'
+LOGIN_REDIRECT_URL = '/userprofile'
+LOGOUT_REDIRECT_URL = 'signin/'
 
 
 # Static files (CSS, JavaScript, Images)
