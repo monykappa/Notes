@@ -7,6 +7,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt 
 from django.contrib.auth.decorators import login_required
 
+
+
 @login_required(login_url='/signin/')
 def note_list(request):
     notes = Note.objects.all()

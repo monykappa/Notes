@@ -22,15 +22,7 @@
                     </div>
                     {% endif %}
                 </div>
-                <div class="form-group">
-                    <label for="profile_picture">Profile Picture:</label>
-                    <input type="file" class="form-control-file" id="profile_picture" name="profile_picture">
-                    {% if form.profile_picture.errors %}
-                    <div class="alert alert-danger">
-                        {{ form.profile_picture.errors }}
-                    </div>
-                    {% endif %}
-                </div>                
+        
                 <div class="form-group">
                     <label for="username">Username:</label>
                     <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
@@ -50,18 +42,25 @@
                     {% endif %}
                 </div>
                 <div class="form-group">
+                    <label for="pfp">Profile Picture:</label>
+                    <input type="file" class="form-control" id="pfp" name="pfp">
+                </div>
+                <div class="form-group">
                     <label for="password1">Password:</label>
                     <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter your password" required>
                 </div>
                 <div class="form-group">
                     <label for="password2">Confirm Password:</label>
-                    <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm your password" required>
-                </div>
-                
+                    <input type="password" class="form-control" id="password2" name="password2" placeholder="Enter your password" required>
+                </div>                
                 <button type="submit" class="btn btn-primary">Sign Up</button>
             </form>
         </div>
     </div>
+    
+    
+    
+    
     
 
 

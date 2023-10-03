@@ -47,6 +47,23 @@ INSTALLED_APPS = [
     'userprofile',
 ]
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_NAME = 'sessionid'
+
+
+
+
+AUTH_USER_MODEL = 'auth.User'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Keep the default authentication backend
+    'userprofile.authentication.CustomUserBackend',  # Replace 'myapp' with your app's name
+]
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -91,6 +108,8 @@ DATABASES = {
         "PORT": "3306",
     }
 }
+
+
 
 
 # Password validation
