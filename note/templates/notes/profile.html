@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+
+<body>
+    <h1>User Profile</h1>
+    <p>Username: {{ user_profile.user.username }}</p>
+    <p>Profile Picture: <img src="{{ user_profile.profile_picture.url }}" alt="Profile Picture" width="100px"></p>
+    <p>Other Field: {{ user_profile.other_field }}</p>
+
+</body>
+
+</html>

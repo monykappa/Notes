@@ -15,7 +15,10 @@ from .models import UserProfile  # Import your UserProfile model
 
 
 
+
 def signup(request):
+    error_message = ""  # Initialize error_message with an empty string
+
     if request.method == 'POST':
         full_name = request.POST['full_name']
         username = request.POST['username']
@@ -36,24 +39,22 @@ def signup(request):
                 error_message = "A user with this username or email already exists."
             else:
                 # Create the user if the username and email are unique
-                user = User(username=username, email=email, password=password1)
+                user = User(username=username, email=email, password=make_password(password1))
                 user.first_name = first_name
                 user.last_name = last_name
 
                 if pfp:
-                    user.profile_picture = pfp  # Save the profile picture to the User model
+                    user.profile_picture = pfp
+                    user.save()
 
-                user.backend = 'django.contrib.auth.backends.ModelBackend'  # Set the authentication backend
-                user.save()
+                    user_profile = UserProfile.objects.create(user=user, profile_picture=pfp)
 
-                # Create a UserProfile instance and link it to the user
-                UserProfile.objects.create(user=user, profile_picture=pfp)
+                    #Set the authentication backend
+                    user.backend = 'django.contrib.auth.backends.ModelBackend'
 
-                # Log in the user
-                login(request, user)
-                return redirect('note_list')  # Redirect to your home page
-    else:
-        error_message = ""
+                    # Log in the user
+                    login(request, user)
+                    return redirect('note_list')  # Redirect to your home page
 
     return render(request, 'userprofile/sign_up.html', {'error_message': error_message})
 

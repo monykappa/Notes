@@ -6,20 +6,30 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt 
 from django.contrib.auth.decorators import login_required
+from userprofile.models import UserProfile
 
 
+def user_profile_view(request):
+    # Get the user's profile based on the currently logged-in user
+    user_profile = UserProfile.objects.get(user=request.user)
+
+    return render(request, 'notes/profile.html', {'user_profile': user_profile})
 
 @login_required(login_url='/signin/')
 def note_list(request):
-    notes = Note.objects.all()
+    # Filter notes to show only the ones associated with the logged-in user
+    notes = Note.objects.filter(user=request.user)
     return render(request, 'notes/note_list.html', {'notes': notes})
 
-@login_required
+@login_required(login_url='/signin/')
 def create_note(request):
     if request.method == 'POST':
         form = NoteForm(request.POST)
         if form.is_valid():
-            form.save()
+            # Create a new note associated with the logged-in user
+            note = form.save(commit=False)  # Don't save the form just yet
+            note.user = request.user  # Set the user for the note
+            note.save()  # Now save the note with the user information
             return redirect('note_list')
     else:
         form = NoteForm()
