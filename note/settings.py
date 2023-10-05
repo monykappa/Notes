@@ -23,12 +23,14 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-7-h&^@o^a%4iwrj0$=lgod*_l2r0*um+j93q*ie^#tepwkzega'
 
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
 
 
 ALLOWED_HOSTS = ['*']
@@ -154,6 +156,8 @@ LOGOUT_REDIRECT_URL = 'signin/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_URL = 'static/'
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

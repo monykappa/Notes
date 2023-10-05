@@ -21,6 +21,7 @@ nav{
     justify-content: space-between;
     align-items: center;
     padding: 10px;
+    background-color: rgba(240, 236, 236, 0.247);;
 }
 
 button.btn-outline-success{
@@ -70,4 +71,8 @@ button.btn-outline-success:hover{
     .user-profile img {
         width: 80px; /* Adjust the profile picture width for smaller screens */
     }
+}
+
+h1{
+    color:green;
 }

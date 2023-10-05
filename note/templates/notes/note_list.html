@@ -11,8 +11,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-    
+    <style>
+    </style>
 <body>
+    
     <nav class="navbar navbar-expand-lg navbar-light custom-bg-color">
         <div class="container">
             <a class="navbar-brand" href="{% url 'note_list' %}">
@@ -47,9 +49,12 @@
             </div>
         </div>
     </nav>
+    <div class="content">
+        {% block nav %}
+        {% endblock nav%}
+    </div>
     
-    
-    
+    <a href="{% url 'create_note' %}">Create New Note</a>
     
     <h1>My Notes</h1>
     <ul>
@@ -62,8 +67,9 @@
         </li>
         {% endfor %}
     </ul>
-    <a href="{% url 'create_note' %}">Create New Note</a>
 
+
+    
 
 
 
