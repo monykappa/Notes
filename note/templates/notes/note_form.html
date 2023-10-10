@@ -1,37 +1,36 @@
-<!-- notes/templates/notes/note_form.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Note</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Create Note</h1>
-    <form method="post" id="noteForm">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" id="saveButton">Save new note</button>
-    </form>
-    <a href="{% url 'note_list' %}">Back to Notes</a>
+    <div class="container mt-5">
+        <h1 class="text-center">Create Note</h1>
+        <form method="post" id="noteForm">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="title" class="form-label">Title:</label>
+                <input type="text" class="form-control" id="title" name="title">
+            </div>
+            <div class="mb-3">
+                <label for="content" class="form-label">Content:</label>
+                <textarea class="form-control" id="content" name="content" rows="4"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="saveButton">Save new note</button>
+        </form>
+        <a href="{% url 'note_list' %}" class="btn btn-secondary mt-3">Back to Notes</a>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.min.js"></script>
     <script>
-        // JavaScript to show a SweetAlert confirmation for "Save new note" button
-        document.getElementById('saveButton').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            Swal.fire({
-                title: 'Save New Note',
-                text: 'Are you sure you want to save this new note?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, save',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Form submission here if confirmed
-                    document.getElementById('noteForm').submit();
-                }
-            });
+        // JavaScript to check if form data is entered and submit the form when going back
+        document.querySelector('a[href*="note_list"]').addEventListener('click', function(event) {
+            if (document.getElementById('title').value.trim() !== '' || document.getElementById('content').value.trim() !== '') {
+                document.getElementById('noteForm').submit();
+            }
         });
     </script>
 </body>

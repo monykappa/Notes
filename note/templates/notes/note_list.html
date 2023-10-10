@@ -1,24 +1,137 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Notes</title>
     <link href="https://fonts.googleapis.com/css2?family=ABeeZee&family=Varela+Round&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/note_lists.css' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
-    <style>
-    </style>
-<body>
+<style>
+    :root {
+        --primary-font: Varela Round;
+        --secondary-font: ABeeZee;
+        --primary--color: #fff0a7;
+        --secondary-color: #fff;
+        --background-color: rgba(240, 236, 236, 0.247);
+    }
+
+    body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: var(--secondary-font);
+}
+
+
+
+
+
+
+    nav {
+        position: relative; /* Ensure the ::before pseudo-element is positioned correctly */
+        background-color: white;
+        border-bottom: 1px solid grey;
+        margin-bottom: 6vh;
+        font-family: var(--primary-font);
+}
+
     
+
+    .nav-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: rgba(240, 236, 236, 0.247);
+
+        ;
+    }
+
+    button.btn-outline-success {
+        margin-right: 5vh;
+        border-radius: 20px;
+        color: black;
+        transition: 0.5s ease;
+        border: 1px solid black;
+    }
+
+    button.btn-outline-success:hover {
+        background-color: var(--primary--color);
+        color: black;
+    }
+
+    .search input[type="search"] {
+        width: 300px;
+        padding: 10px;
+        margin-right: 10px;
+        font-size: 16px;
+        border: 1px solid grey;
+        border-radius: 20px;
+    }
+
+    .logo img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .search input[type="search"] {
+        width: 300px;
+        /* Adjust the width as needed */
+        padding: 10px;
+        /* Adjust the padding as needed */
+        font-size: 16px;
+        /* Adjust the font size as needed */
+    }
+
+    .note-card {
+    background-color: #f7f18e; /* Background color of the note */
+    border: 1px solid grey; /* Grey border for the note */
+    padding: 10px; /* Padding to create space inside the note */
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s ease-in-out; /* Transition for background-color change */
+}
+
+.note-card:hover {
+    background-color: #f7f18e; /* Background color on hover */
+}
+
+    /* Media query for responsiveness */
+    @media (max-width: 768px) {
+        nav{
+            margin-bottom: 3vh;
+        }
+        /* Adjust the layout for smaller screens */
+        .nav-bar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .user-profile {
+            margin-top: 10px;
+        }
+
+        .user-profile img {
+            width: 80px;
+            /* Adjust the profile picture width for smaller screens */
+        }
+    }
+</style>
+
+<body>
     <nav class="navbar navbar-expand-lg navbar-light custom-bg-color">
         <div class="container">
             <a class="navbar-brand" href="{% url 'note_list' %}">
-                <img src="{% static 'image/Screenshot_2023-09-22_182248-removebg-preview.png' %}" alt="logo" width="100px">
+                <img src="{% static 'image/Screenshot_2023-09-22_182248-removebg-preview.png' %}" alt="logo"
+                    width="100px">
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,16 +142,15 @@
                     <li class="nav-item">
                         <form class="form-inline my-2 my-lg-0">
                             <div class="search">
-                                <input type="search" placeholder="Search your note">
+                                <input type="search" id="searchInput" placeholder="Search your note">
+                                <ul id="searchResults"></ul>
                             </div>
-                            
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                         </form>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'profile' %}">
-                            <p>{{ user.get_full_name }}</p>
+                            <p style="text-decoration: underline;">{{ user.get_full_name }}</p>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -53,27 +165,70 @@
         {% block nav %}
         {% endblock nav%}
     </div>
-    
-    <a href="{% url 'create_note' %}">Create New Note</a>
-    
-    <h1>My Notes</h1>
-    <ul>
-        {% for note in notes %}
-        <li>
-            <a href="{% url 'note_detail' note.id %}">
-                <strong>{{ note.title }}</strong><br>
-            </a>
-            {{ note.content }}
-        </li>
-        {% endfor %}
-    </ul>
-
 
     
 
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6" style="margin-bottom: 2vh; font-family: var(--primary-font); font-weight: bold;">
+                <h1>My Notes</h1>
+            </div>
+            <div class="col-md-6 text-right">
+                <a href="{% url 'create_note' %}" class="create">Create New Note +</a>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+    {% for note in notes %}
+    <div class="col-md-4" style="margin-top: 2vh;">
+        <a href="{% url 'note_detail' note.id %}" class="card-link">
+            <div class="card mb-4 note-card">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-size: 25px; color: black; font-weight: bold;">{{ note.title }}</h5>
+                    <hr>
+                    <!-- Display only 30-40 words and add "..." at the end -->
+                    <p class="card-text" style="color: grey;">{{ note.content|truncatewords_html:40 }}{% if note.content|length > 40 %}...{% endif %}</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
 
-
+    </div>
+    
+    
 
     
+    
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const noteCards = document.querySelectorAll('.note-card');
+    
+            noteCards.forEach((card) => {
+                card.addEventListener('mousemove', (e) => {
+                    const mouseX = e.clientX - card.getBoundingClientRect().left;
+                    const cardWidth = card.clientWidth;
+                    const scale = (mouseX / cardWidth) * 100;
+    
+                    card.style.backgroundImage = `linear-gradient(to right, #f5ef3a ${scale}%, #f7f18e ${scale}%)`;
+                });
+    
+                card.addEventListener('mouseleave', () => {
+                    card.style.backgroundImage = 'none';
+                });
+            });
+        });
+    </script>
+    
+    
+    
+    
+
+
+
 </body>
+
 </html>

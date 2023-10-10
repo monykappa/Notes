@@ -8,10 +8,143 @@
     <link href="https://fonts.googleapis.com/css2?family=ABeeZee&family=Varela+Round&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'css/note_lists.css' %}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
+<style>
+    :root {
+        --primary-font: Varela Round;
+        --secondary-font: ABeeZee;
+        --primary--color: #fff0a7;
+        --secondary-color: #fff;
+        --background-color: rgba(240, 236, 236, 0.247);
+    }
+
+    body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: var(--secondary-font);
+    font-size: 20px;
+}
+
+    nav {
+        position: relative; /* Ensure the ::before pseudo-element is positioned correctly */
+        background-color: white;
+        border-bottom: 1px solid grey;
+        margin-bottom: 6vh;
+        font-family: var(--primary-font);
+}
+
+    
+
+    .nav-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: rgba(240, 236, 236, 0.247);
+
+        ;
+    }
+
+    button.btn-outline-success {
+        margin-right: 5vh;
+        border-radius: 20px;
+        color: black;
+        transition: 0.5s ease;
+        border: 1px solid black;
+    }
+
+    button.btn-outline-success:hover {
+        background-color: var(--primary--color);
+        color: black;
+    }
+
+    .search input[type="search"] {
+        width: 300px;
+        padding: 10px;
+        margin-right: 10px;
+        font-size: 16px;
+        border: 1px solid grey;
+        border-radius: 20px;
+    }
+
+    .logo img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .search input[type="search"] {
+        width: 300px;
+        /* Adjust the width as needed */
+        padding: 10px;
+        /* Adjust the padding as needed */
+        font-size: 16px;
+        /* Adjust the font size as needed */
+    }
+    @media (max-width: 768px) {
+        .btn-go-back {
+            margin-left: 1vh;
+        }
+        nav{
+            margin-bottom: 3vh;
+        }
+        /* Adjust the layout for smaller screens */
+        .nav-bar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .user-profile {
+            margin-top: 10px;
+        }
+
+        .user-profile img {
+            width: 80px;
+            /* Adjust the profile picture width for smaller screens */
+        }
+    }
+    a.btn-go-back{
+        margin-left: 5vh;
+    }
+    .related-notes {
+        background-color: #f2f2f2;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-top: 6.5vh;
+    }
+    /* Apply custom styles for focused input and textarea elements */
+/* Remove Bootstrap's focus styles for elements with the custom-input class */
+.custom-input.form-control:focus {
+    background-color: #f7f18e; /* Set the background color for focused elements */
+    border: none; /* Remove the border */
+    box-shadow: none; /* Remove any box-shadow applied by Bootstrap */
+    outline: none; /* Remove the default outline (usually a blue border) */
+}
+
+
+    textarea.custom-input,
+input.custom-input {
+    background-color: #f7f18e;
+    border: none;
+}   
+
+
+.notebook-textarea {
+
+    line-height: 1.2em;
+    padding: 5px;
+    border: none;
+    resize: none;
+    height: auto;
+    min-height: 1.2em;
+    overflow: hidden; /* Hide any overflowing content */
+}
+
+
+</style>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light custom-bg-color">
         <div class="container">
@@ -48,64 +181,91 @@
         </div>
     </nav>
 
-    <h1>Note Detail</h1>
+    <a href="{% url 'note_list' %}" class="btn btn-secondary mt-3 btn-go-back"> < </a>
 
-    <form method="post" id="noteForm">
-        {% csrf_token %}
-        <label for="title">Title:</label>
-        <input type="text" name="title" id="title" value="{{ note.title }}"><br>
-        <label for="content">Content:</label>
-        <textarea name="content" id="content">{{ note.content }}</textarea><br>
-        <button type="submit" id="saveButton">Save</button> <!-- Changed input to button -->
-    </form>
-
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="text-center" style="font-family: var(--primary-font);">Note Detail</h1>
     
-    <a href="{% url 'note_list' %}" id="backToNoteList">Back to Note List</a>
+                <form method="post" id="noteForm" style="border: none; background-color: #f7f18e; padding: 20px; border-radius: 15px;">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control custom-input title-input" name="title" id="title" value="{{ note.title }}" style="font-size: 35px; color: black;">
+                        <hr>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control custom-input content-input notebook-textarea" name="content" id="content" rows="30">{{ note.content }}</textarea>
+                    </div>
+                    
+                    
+                    <button type="submit" style="display: none;" id="saveButton"></button>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <!-- Related notes section -->
+                <div class="related-notes" style="background-color: transparent; border-radius: 15px;">
+                    <h3>Latest Notes</h3>
+                    <!-- Add your related notes content here -->
+                    <ul>
+                        {% for related_note in latest_notes %}
+                            <li><a href="{% url 'note_detail' related_note.id %}" style="color:grey">{{ related_note.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        // JavaScript to show a SweetAlert confirmation for "Save" button
-        document.getElementById('saveButton').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            Swal.fire({
-                title: 'Save Changes',
-                text: 'Your changes have been saved.',
-                icon: 'info',
-                timer: 2000, // Display for 2 seconds (adjust as needed)
-                showConfirmButton: false
-            }).then(() => {
-                // Form submission here after the timer
-                document.getElementById('noteForm').submit();
-            });
-        });
-
-        // JavaScript to show a SweetAlert confirmation for "Back to Note List" link
-        document.getElementById('backToNoteList').addEventListener('click', function(event) {
-            if (document.getElementById('noteForm').hasAttribute('data-changed')) {
-                // If the form has changed, show a confirmation alert with SweetAlert
-                Swal.fire({
-                    title: 'Leave without saving?',
-                    text: 'You have unsaved changes. Are you sure you want to go back without saving?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, go back',
-                    cancelButtonText: 'Cancel',
-                    timer: 10000, // Adjust the timer (in milliseconds) as needed
-                    timerProgressBar: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // User confirmed, navigate back
-                        window.location.href = this.href;
-                    }
-                });
-                event.preventDefault(); // Prevent immediate navigation
-            }
-        });
-
-        // JavaScript to track form changes
-        document.getElementById('noteForm').addEventListener('input', function() {
-            this.setAttribute('data-changed', 'true');
+        // Function to auto-resize the textarea without showing a scrollbar
+        function autoResizeTextarea() {
+            this.style.overflow = 'hidden'; // Hide any overflowing content
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        }
+    
+        // Attach the auto-resize function to all textareas with the .notebook-textarea class
+        $(document).ready(function() {
+            $('.notebook-textarea').on('input', autoResizeTextarea);
         });
     </script>
+
+    <script>
+        const titleInput = document.getElementById('title');
+        const contentInput = document.getElementById('content');
+        
+        // Function to send form data to the server in real-time
+        function autoSaveForm() {
+            function sendFormData() {
+                $.ajax({
+                    url: '{% url 'note_detail' note.id %}', // Replace with your actual URL
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'title': titleInput.value,
+                        'content': contentInput.value,
+                    },
+                    success: function () {
+                        console.log('Data auto-saved successfully');
+                    }
+                });
+            }
+    
+            // Send data when title or content input changes
+            titleInput.addEventListener('input', sendFormData);
+            contentInput.addEventListener('input', sendFormData);
+            
+            // Send initial data
+            sendFormData();
+        }
+    
+        // Call the autoSaveForm function to set up the real-time auto-save functionality
+        autoSaveForm();
+    </script>
+    
 </body>
 </html>
