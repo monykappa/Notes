@@ -27,19 +27,15 @@
     margin: 0;
     box-sizing: border-box;
     font-family: var(--secondary-font);
+    background-image: url('https://img.freepik.com/premium-vector/seamless-pattern-abstract-background-with-futuristic-style-use-business-cover-banner_7505-1822.jpg');
 }
-
-
-
-
-
 
     nav {
         position: relative; /* Ensure the ::before pseudo-element is positioned correctly */
         background-color: white;
-        border-bottom: 1px solid grey;
         margin-bottom: 6vh;
         font-family: var(--primary-font);
+        background-image: url('https://img.freepik.com/premium-vector/seamless-pattern-abstract-background-with-futuristic-style-use-business-cover-banner_7505-1822.jpg');
 }
 
     
@@ -150,13 +146,19 @@
                     {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'profile' %}">
-                            <p style="text-decoration: underline;">{{ user.get_full_name }}</p>
+                            <p style="text-decoration: underline; color: #000; font-size: 16px;">{{ user.get_full_name }}</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'userprofile:custom_logout' %}">Logout</a>
+                        <a class="nav-link" href="{% url 'userprofile:custom_logout' %}" style="color:#000; font-size: 16px;">Logout</a>
                     </li>
                     {% endif %}
+                    <li>
+                        <a href="{% url 'restore_note' note.id %}"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="3 5" height="35" viewBox="0,0,256,256">
+                            <g fill="#000000" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(4,4)"><path d="M28,6c-2.209,0 -4,1.791 -4,4v2h-0.40039l-13.59961,2v3h44v-3l-13.59961,-2h-0.40039v-2c0,-2.209 -1.791,-4 -4,-4zM28,10h8v2h-8zM12,19l2.70117,33.32227c0.168,2.077 1.90428,3.67773 3.98828,3.67773h26.62305c2.084,0 3.81733,-1.59878 3.98633,-3.67578l2.625,-32.32422zM20,26c1.105,0 2,0.895 2,2v23h-3l-1,-23c0,-1.105 0.895,-2 2,-2zM32,26c1.657,0 3,1.343 3,3v22h-6v-22c0,-1.657 1.343,-3 3,-3zM44,26c1.105,0 2,0.895 2,2l-1,23h-3v-23c0,-1.105 0.895,-2 2,-2z"></path></g></g>
+                            </svg>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -179,20 +181,34 @@
         </div>
         <hr>
         <div class="row">
-    {% for note in notes %}
-    <div class="col-md-4" style="margin-top: 2vh;">
-        <a href="{% url 'note_detail' note.id %}" class="card-link">
-            <div class="card mb-4 note-card">
-                <div class="card-body">
-                    <h5 class="card-title" style="font-size: 25px; color: black; font-weight: bold;">{{ note.title }}</h5>
-                    <hr>
-                    <!-- Display only 30-40 words and add "..." at the end -->
-                    <p class="card-text" style="color: grey;">{{ note.content|truncatewords_html:40 }}{% if note.content|length > 40 %}...{% endif %}</p>
-                </div>
+            {% for note in notes %}
+            <div class="col-md-4" style="margin-top: 2vh;">
+                <a href="{% url 'note_detail' note.id %}" class="card-link">
+                    <div class="card mb-4 note-card">
+                        <div class="card-body">
+                            <h5 class="card-title" style="font-size: 25px; color: black; font-weight: bold;">{{ note.title }}</h5>
+                            <hr>
+                            <!-- Display only 30-40 words and add "..." at the end -->
+                            <p class="card-text" style="color: grey;">{{ note.content|truncatewords_html:40 }}{% if note.content|length > 40 %}...{% endif %}</p>
+                            <form method="post" action="{% url 'delete_note' note.id %}" style="text-align: right;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger" style="background-color: red; outline:none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0,0,256,256">
+                                        <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+                                            <g transform="scale(4,4)">
+                                                <path d="M28,6c-2.209,0 -4,1.791 -4,4v2h-0.40039l-13.59961,2v3h44v-3l-13.59961,-2h-0.40039v-2c0,-2.209 -1.791,-4 -4,-4zM28,10h8v2h-8zM12,19l2.70117,33.32227c0.168,2.077 1.90428,3.67773 3.98828,3.67773h26.62305c2.084,0 3.81733,-1.59878 3.98633,-3.67578l2.625,-32.32422zM20,26c1.105,0 2,0.895 2,2v23h-3l-1,-23c0,-1.105 0.895,-2 2,-2zM32,26c1.657,0 3,1.343 3,3v22h-6v-22c0,-1.657 1.343,-3 3,-3zM44,26c1.105,0 2,0.895 2,2l-1,23h-3v-23c0,-1.105 0.895,-2 2,-2z"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </button>
+                            </form>
+                            
+                        </div>
+                    </div>
+                </a>
             </div>
-        </a>
-    </div>
-    {% endfor %}
+            {% endfor %}
+            
 </div>
 
     </div>

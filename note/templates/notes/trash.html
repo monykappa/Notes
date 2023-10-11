@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=ABeeZee&family=Varela+Round&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>Trash</title>
+</head>
+
+<body>
+
+    <!-- Display the deleted notes -->
+    <!-- Display the deleted notes -->
+    <div class="deleted-notes">
+        {% for note in deleted_notes %}
+        <div class="note-card">
+            <h5 class="note-title">{{ note.title }}</h5>
+            <p class="note-content">{{ note.content }}</p>
+            <a href="{% url 'restore_note' note.id %}" class="restore-button">Restore</a>
+            <a href="{% url 'delete_permanently' note.id %}" class="delete-button">Delete Permanently</a>
+        </div>
+        {% empty %}
+        <p>No deleted notes.</p>
+        {% endfor %}
+    </div>
+
+</body>
+
+</html>

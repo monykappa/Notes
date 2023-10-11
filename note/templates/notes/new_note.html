@@ -1,18 +1,18 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Note Detail</title>
-    <link href="https://fonts.googleapis.com/css2?family=ABeeZee&family=Varela+Round&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</head>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=ABeeZee&family=Varela+Round&display=swap" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <title>New Notes</title>
+    </head>
 <style>
-    :root {
+        :root {
         --primary-font: Varela Round;
         --secondary-font: ABeeZee;
         --primary--color: #fff0a7;
@@ -85,6 +85,9 @@
         /* Adjust the font size as needed */
     }
     @media (max-width: 768px) {
+        .text-center{
+            margin: 20px;
+        }
         .btn-go-back {
             margin-left: 1vh;
         }
@@ -106,46 +109,26 @@
             /* Adjust the profile picture width for smaller screens */
         }
     }
-    a.btn-go-back{
-        margin-left: 5vh;
+    .text-center{
+        padding: 5vh;
+        border: 1px solid grey;
+        border-radius: 15px;
+        background-color: #f7f18e;
     }
-    .related-notes {
-        background-color: #f2f2f2;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-top: 6.5vh;
-    }
-    /* Apply custom styles for focused input and textarea elements */
-/* Remove Bootstrap's focus styles for elements with the custom-input class */
+    textarea.custom-input,
+    input.custom-input {
+    background-color: #f7f18e;
+    border: none;
+}   
 .custom-input.form-control:focus {
     background-color: #f7f18e; /* Set the background color for focused elements */
     border: none; /* Remove the border */
     box-shadow: none; /* Remove any box-shadow applied by Bootstrap */
     outline: none; /* Remove the default outline (usually a blue border) */
 }
-
-
-    textarea.custom-input,
-input.custom-input {
-    background-color: #f7f18e;
-    border: none;
-}   
-
-
-.notebook-textarea {
-    line-height: 1.2em;
-    padding: 5px;
-    border: none;
-    resize: none;
-    height: auto;
-    min-height: 1.2em;
-    overflow: hidden; /* Hide any overflowing content */
-}
-
-
 </style>
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-light custom-bg-color">
         <div class="container">
             <a class="navbar-brand" href="{% url 'note_list' %}">
@@ -181,91 +164,48 @@ input.custom-input {
         </div>
     </nav>
 
-    <a href="{% url 'note_list' %}" class="btn btn-secondary mt-3 btn-go-back"> < </a>
+    <a href="{% url 'note_list' %}" class="btn btn-secondary mt-3 btn-go-back" style="margin-left: 5vh; padding:5px 15px; border-radius: 15px; background-color: white; color:#000; font-size: 20px;"> < Back </a>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <h1 class="text-center" style="font-family: var(--primary-font);">Note Detail</h1>
-    
-                <form method="post" id="noteForm" style="border: none; background-color: #f7f18e; padding: 20px; border-radius: 15px;">
+    <h1 class="mb-4" style="text-align: center; margin:20px 0; font-family: var(--primary-font);">New Note</h1>
+    <div class="container mt-5 ctn-new-form">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center"> <!-- Add text-center class here -->
+
+                <form method="post" id="noteForm" action="{% url 'create_note' %}">
                     {% csrf_token %}
-                    <div class="form-group">
-                        <input type="text" class="form-control custom-input title-input" name="title" id="title" value="{{ note.title }}" style="font-size: 35px; color: black;">
+                    <div class="mb-3">
+                        <input type="text" class="form-control custom-input" id="title" name="title" placeholder="Title" style="font-size: 35px; color: black;">
                         <hr>
                     </div>
-                    <div class="form-group">
-                        <textarea class="form-control custom-input content-input notebook-textarea" name="content" id="content" rows="30">{{ note.content }}</textarea>
+                    <div class="mb-3">
+                        <textarea class="form-control custom-input" id="content" name="content" rows="20" placeholder="Contents"></textarea>
                     </div>
-                    
-                    
-                    <button type="submit" style="display: none;" id="saveButton"></button>
+                    <button type="submit" class="btn btn-primary" style="background-color: white; border: 1px solid grey; padding:5px 15px; color:#000; border-radius: 15px;">Create</button>
                 </form>
-            </div>
-            <div class="col-md-4">
-                <!-- Related notes section -->
-                <div class="related-notes" style="background-color: transparent; border-radius: 15px;">
-                    <h3>Latest Notes</h3>
-                    <!-- Add your related notes content here -->
-                    <ul>
-                        {% for related_note in latest_notes %}
-                            <li><a href="{% url 'note_detail' related_note.id %}" style="color:grey">{{ related_note.title }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
-    
-    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script>
-        // Function to auto-resize the textarea without showing a scrollbar
-        function autoResizeTextarea() {
-            this.style.overflow = 'hidden'; // Hide any overflowing content
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
-        }
     
-        // Attach the auto-resize function to all textareas with the .notebook-textarea class
-        $(document).ready(function() {
-            $('.notebook-textarea').on('input', autoResizeTextarea);
+    <script>
+        // JavaScript to automatically save the form data when going back
+        document.getElementById('backButton').addEventListener('click', function(event) {
+            var title = document.getElementById('title').value.trim();
+            var content = document.getElementById('content').value.trim();
+            if (title || content) {
+                var formData = new FormData(document.querySelector('form'));
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', document.querySelector('form').getAttribute('action'), true);
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        window.location.href = this.getAttribute('href');
+                    }
+                }.bind(this);
+                xhr.send(formData);
+                event.preventDefault();
+            }
         });
     </script>
-
-    <script>
-        const titleInput = document.getElementById('title');
-        const contentInput = document.getElementById('content');
-        
-        // Function to send form data to the server in real-time
-        function autoSaveForm() {
-            function sendFormData() {
-                $.ajax({
-                    url: '{% url 'note_detail' note.id %}', // Replace with your actual URL
-                    type: 'POST',
-                    data: {
-                        'csrfmiddlewaretoken': '{{ csrf_token }}',
-                        'title': titleInput.value,
-                        'content': contentInput.value,
-                    },
-                    success: function () {
-                        console.log('Data auto-saved successfully');
-                    }
-                });
-            }
-    
-            // Send data when title or content input changes
-            titleInput.addEventListener('input', sendFormData);
-            contentInput.addEventListener('input', sendFormData);
-            
-            // Send initial data
-            sendFormData();
-        }
-    
-        // Call the autoSaveForm function to set up the real-time auto-save functionality
-        autoSaveForm();
-    </script>
-    
 </body>
 </html>
