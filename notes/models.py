@@ -13,15 +13,15 @@ class Note(models.Model):
         return self.title
 
 
-class Trash(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+class TrashNote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    title = models.CharField(max_length=200, null=True)
+    content = models.TextField(null=True)
     deleted_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        if self.note:
-            return f"Deleted Note: {self.note.title} ({self.deleted_at})"
-        else:
-            return f"Deleted Note (no associated note) ({self.deleted_at})"
+        return f"Deleted Note: {self.title}"
+
+
 
 

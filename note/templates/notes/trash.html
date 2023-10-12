@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,23 +12,238 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <title>Trash</title>
 </head>
+<style>
+    :root {
+        --primary-font: Varela Round;
+        --secondary-font: ABeeZee;
+        --primary--color: #fff0a7;
+        --secondary-color: #fff;
+        --background-color: rgba(240, 236, 236, 0.247);
+    }
 
+    body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: var(--secondary-font);
+    background-image: url('https://img.freepik.com/premium-vector/seamless-pattern-abstract-background-with-futuristic-style-use-business-cover-banner_7505-1822.jpg');
+}
+
+    nav {
+        position: relative; /* Ensure the ::before pseudo-element is positioned correctly */
+        background-color: white;
+        margin-bottom: 6vh;
+        font-family: var(--primary-font);
+        background-image: url('https://img.freepik.com/premium-vector/seamless-pattern-abstract-background-with-futuristic-style-use-business-cover-banner_7505-1822.jpg');
+}
+
+    
+
+    .nav-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: rgba(240, 236, 236, 0.247);
+
+        ;
+    }
+
+    button.btn-outline-success {
+        margin-right: 5vh;
+        border-radius: 20px;
+        color: black;
+        transition: 0.5s ease;
+        border: 1px solid black;
+    }
+
+    button.btn-outline-success:hover {
+        background-color: var(--primary--color);
+        color: black;
+    }
+
+    .search input[type="search"] {
+        width: 300px;
+        padding: 10px;
+        margin-right: 10px;
+        font-size: 16px;
+        border: 1px solid grey;
+        border-radius: 20px;
+    }
+
+    .logo img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .search input[type="search"] {
+        width: 300px;
+        /* Adjust the width as needed */
+        padding: 10px;
+        /* Adjust the padding as needed */
+        font-size: 16px;
+        /* Adjust the font size as needed */
+    }
+
+    .note-card {
+    background-color: #f7f18e; /* Background color of the note */
+    border: 1px solid grey; /* Grey border for the note */
+    padding: 10px; /* Padding to create space inside the note */
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s ease-in-out; /* Transition for background-color change */
+}
+
+.note-card:hover {
+    background-color: #f7f18e; /* Background color on hover */
+}
+
+    /* Media query for responsiveness */
+    @media (max-width: 768px) {
+        .text-note{
+            width:auto;
+        }
+        .text-note h1{
+            padding:1vh;
+        }
+        nav{
+            margin-bottom: 3vh;
+        }
+        /* Adjust the layout for smaller screens */
+        .nav-bar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .user-profile {
+            margin-top: 10px;
+        }
+
+        .user-profile img {
+            width: 80px;
+            /* Adjust the profile picture width for smaller screens */
+        }
+        
+    }
+    .deleted-notes {
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap to the next row on smaller screens */
+        }
+        .note-card {
+            /* Add your styling for individual note cards here */
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    a.restore-button{
+        background-color: green;
+        padding: 15px;
+        border-radius: 5px;
+        transition: 0.3s ease-in-out;
+    }
+    a.delete-button{
+        background-color: rgb(168, 25, 25);
+        padding: 15px;
+        border-radius: 5px;
+        transition: 0.3s ease-in-out;
+    }
+    a.restore-button:hover{
+        background-color: rgb(79, 228, 79);
+    }
+
+    a.delete-button:hover{
+        background-color: rgb(226, 36, 36);
+    }
+    .text-note{
+        width: 57%;
+        display: flex;
+        margin: 0 auto;
+
+    }
+    .text-note h1{
+        font-family: var(--primary-font);
+        border: 2px solid black;
+        padding: 10px;
+        text-align: center;
+        border-radius: 10px;
+        display: flex;
+    }
+</style>
 <body>
-
-    <!-- Display the deleted notes -->
-    <!-- Display the deleted notes -->
-    <div class="deleted-notes">
-        {% for note in deleted_notes %}
-        <div class="note-card">
-            <h5 class="note-title">{{ note.title }}</h5>
-            <p class="note-content">{{ note.content }}</p>
-            <a href="{% url 'restore_note' note.id %}" class="restore-button">Restore</a>
-            <a href="{% url 'delete_permanently' note.id %}" class="delete-button">Delete Permanently</a>
+    <nav class="navbar navbar-expand-lg navbar-light custom-bg-color">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'note_list' %}">
+                <img src="{% static 'image/Screenshot_2023-09-22_182248-removebg-preview.png' %}" alt="logo"
+                    width="100px">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <form class="form-inline my-2 my-lg-0">
+                            <div class="search">
+                                <input type="search" id="searchInput" placeholder="Search your note">
+                                <ul id="searchResults"></ul>
+                            </div>
+                        </form>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}">
+                            <p style="text-decoration: underline; color: #000; font-size: 16px;">{{ user.get_full_name }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'userprofile:custom_logout' %}" style="color:#000; font-size: 16px;">Logout</a>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <a href="{% url 'trash_view' %}"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="3 5" height="35" viewBox="0,0,256,256">
+                            <g fill="#000000" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(4,4)"><path d="M28,6c-2.209,0 -4,1.791 -4,4v2h-0.40039l-13.59961,2v3h44v-3l-13.59961,-2h-0.40039v-2c0,-2.209 -1.791,-4 -4,-4zM28,10h8v2h-8zM12,19l2.70117,33.32227c0.168,2.077 1.90428,3.67773 3.98828,3.67773h26.62305c2.084,0 3.81733,-1.59878 3.98633,-3.67578l2.625,-32.32422zM20,26c1.105,0 2,0.895 2,2v23h-3l-1,-23c0,-1.105 0.895,-2 2,-2zM32,26c1.657,0 3,1.343 3,3v22h-6v-22c0,-1.657 1.343,-3 3,-3zM44,26c1.105,0 2,0.895 2,2l-1,23h-3v-23c0,-1.105 0.895,-2 2,-2z"></path></g></g>
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        {% empty %}
-        <p>No deleted notes.</p>
-        {% endfor %}
+    </nav>
+
+    <div class="text-note">
+        <h1>Your Trash Notes</h1>
     </div>
+
+    <div class="container" style="margin-top:5vh">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="deleted-notes">
+                    {% for note in deleted_notes %}
+                    <div class="note-card" style="padding: 40px;">
+                        <h5 class="note-title" style="font-size: 25px; font-weight: bold;">{{ note.title }}</h5>
+                        <hr>
+                        <p class="note-content" style="color: grey;">{{ note.content }}</p>
+                        <hr style="margin-bottom: 30px;">
+                        <a href="{% url 'restore_note' note.id %}" class="restore-button"><img width="35" height="35" src="https://img.icons8.com/fluency-systems-filled/100/000000/settings-backup-restore.png" alt="settings-backup-restore"/></a>
+                        <a href="{% url 'delete_permanently' note.id %}" class="delete-button"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="35" height="35" viewBox="0,0,256,256">
+                            <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+                                <g transform="scale(4,4)">
+                                    <path d="M28,6c-2.209,0 -4,1.791 -4,4v2h-0.40039l-13.59961,2v3h44v-3l-13.59961,-2h-0.40039v-2c0,-2.209 -1.791,-4 -4,-4zM28,10h8v2h-8zM12,19l2.70117,33.32227c0.168,2.077 1.90428,3.67773 3.98828,3.67773h26.62305c2.084,0 3.81733,-1.59878 3.98633,-3.67578l2.625,-32.32422zM20,26c1.105,0 2,0.895 2,2v23h-3l-1,-23c0,-1.105 0.895,-2 2,-2zM32,26c1.657,0 3,1.343 3,3v22h-6v-22c0,-1.657 1.343,-3 3,-3zM44,26c1.105,0 2,0.895 2,2l-1,23h-3v-23c0,-1.105 0.895,-2 2,-2z"></path>
+                                </g>
+                            </g>
+                        </svg></a>
+                    </div>
+                    {% empty %}
+                    <p>No deleted notes.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 </body>
 

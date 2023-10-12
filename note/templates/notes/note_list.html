@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
@@ -120,6 +121,10 @@
             /* Adjust the profile picture width for smaller screens */
         }
     }
+    button.delete-btn{
+        background-color: rgb(168, 25, 25);
+        transition: 0.3s ease-in-out;
+    }
 </style>
 
 <body>
@@ -154,7 +159,7 @@
                     </li>
                     {% endif %}
                     <li>
-                        <a href="{% url 'restore_note' note.id %}"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="3 5" height="35" viewBox="0,0,256,256">
+                        <a href="{% url 'trash_view' %}"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="3 5" height="35" viewBox="0,0,256,256">
                             <g fill="#000000" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(4,4)"><path d="M28,6c-2.209,0 -4,1.791 -4,4v2h-0.40039l-13.59961,2v3h44v-3l-13.59961,-2h-0.40039v-2c0,-2.209 -1.791,-4 -4,-4zM28,10h8v2h-8zM12,19l2.70117,33.32227c0.168,2.077 1.90428,3.67773 3.98828,3.67773h26.62305c2.084,0 3.81733,-1.59878 3.98633,-3.67578l2.625,-32.32422zM20,26c1.105,0 2,0.895 2,2v23h-3l-1,-23c0,-1.105 0.895,-2 2,-2zM32,26c1.657,0 3,1.343 3,3v22h-6v-22c0,-1.657 1.343,-3 3,-3zM44,26c1.105,0 2,0.895 2,2l-1,23h-3v-23c0,-1.105 0.895,-2 2,-2z"></path></g></g>
                             </svg>
                         </a>
@@ -172,8 +177,8 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-6" style="margin-bottom: 2vh; font-family: var(--primary-font); font-weight: bold;">
-                <h1>My Notes</h1>
+            <div class="col-md-6 my-note" style="margin-bottom: 2vh; font-family: var(--primary-font); font-weight: bold;">
+                <h1 style="border: 2px solid black; width:40%; text-align: center; border-radius: 10px; padding: 5px;">My Notes</h1>
             </div>
             <div class="col-md-6 text-right">
                 <a href="{% url 'create_note' %}" class="create">Create New Note +</a>
@@ -190,9 +195,9 @@
                             <hr>
                             <!-- Display only 30-40 words and add "..." at the end -->
                             <p class="card-text" style="color: grey;">{{ note.content|truncatewords_html:40 }}{% if note.content|length > 40 %}...{% endif %}</p>
-                            <form method="post" action="{% url 'delete_note' note.id %}" style="text-align: right;">
+                            <form method="post" action="{% url 'delete_note' note.id %}" id="delete-form-{{ note.id }}" style="text-align: right;">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-danger" style="background-color: red; outline:none;">
+                                <button type="button" class="btn btn-danger delete-btn" onclick="showDeleteConfirmation({{ note.id }})">
                                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0,0,256,256">
                                         <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
                                             <g transform="scale(4,4)">
@@ -208,13 +213,23 @@
                 </a>
             </div>
             {% endfor %}
-            
-</div>
-
+        </div>
     </div>
     
     
 
+    <script>
+        // Function to show the notification
+        function showDeleteNotification() {
+            Swal.fire({
+                title: 'Note moved to trash',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1500 // Adjust the time the notification is displayed (in milliseconds)
+            });
+        }
+    </script>
+    
     
     
 

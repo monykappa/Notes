@@ -1,13 +1,10 @@
 
 from django.contrib import admin
-from .models import Note, Trash
+from .models import Note, TrashNote
 
 
-@admin.register(Trash)
-class TrashAdmin(admin.ModelAdmin):
-    list_display = ('user', 'note', 'deleted_at')
-    list_filter = ('user', 'deleted_at')
-    search_fields = ('user__username', 'note__title')
+admin.site.register(TrashNote)
+
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):

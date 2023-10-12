@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import NoteForm
-from .models import Trash
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt 
@@ -12,36 +11,46 @@ from django.db.models import F
 
 
 
-def restore_note(request):
-    # Retrieve deleted notes from the Trash model for the logged-in user
-    deleted_notes = Trash.objects.filter(user=request.user)
+def trash_view(request):
+    deleted_notes = TrashNote.objects.filter(user=request.user)
     return render(request, 'notes/trash.html', {'deleted_notes': deleted_notes})
 
+def delete_permanently(request, note_id):
+    trash_note = get_object_or_404(TrashNote, id=note_id)
+    trash_note.delete()
+    return redirect('trash_view')
+
+def restore_note(request, note_id):
+    trash_note = get_object_or_404(TrashNote, id=note_id)
+
+    # Create a new Note from the TrashNote
+    restored_note = Note(user=trash_note.user, title=trash_note.title, content=trash_note.content)
+    restored_note.save()
+
+    # Delete the TrashNote
+    trash_note.delete()
+
+    return redirect('trash_view')
 
 def delete_note(request, note_id):
-    # Get the note to be deleted
-    note = Note.objects.get(id=note_id)
+    # Get the original note
+    original_note = get_object_or_404(Note, id=note_id)
 
-    # Create a new Trash object with the same content
-    trash_note = Trash(user=request.user, note=note)
+    # Create a TrashNote entry with title and content from the original note
+    trash_note = TrashNote(
+        user=request.user,
+        title=original_note.title,
+        content=original_note.content
+    )
     trash_note.save()
 
     # Delete the original note
-    note.delete()
+    original_note.delete()
 
-    # Redirect to the appropriate page (note_list or trash_page)
-    return redirect('note_list')  # Or 'trash_page' if you have one
-
+    return redirect('note_list')  # Redirect to the view displaying user's notes.
 
 
 
-
-
-
-    
-
-
-    return render(request, 'notes/profile.html', {'user_profile': user_profile})
 
 @login_required(login_url='/signin/')
 def note_list(request):
@@ -54,6 +63,7 @@ def note_list(request):
 def user_profile_view(request):
     # Get the user's profile based on the currently logged-in user
     user_profile = UserProfile.objects.get(user=request.user)
+    return render(request, 'notes/profile.html', {'user_profile': user_profile})
 
 
 @login_required(login_url='/signin/')
